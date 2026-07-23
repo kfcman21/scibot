@@ -89,18 +89,18 @@
       }
     });
 
-    // 지능형 과학교실 ON 연계 링크 (교사가 포털 URL을 한 번 설정)
+    // 지능형 과학교실 ON 연계 링크 (기본: kfcman.link/on, Shift+클릭으로 변경)
     document.querySelectorAll("[data-on-link]").forEach(function (a) {
       a.addEventListener("click", function (e) {
         e.preventDefault();
         var url = localStorage.getItem("scibot_on_url");
-        if (!url || e.shiftKey) {
-          url = prompt("‘지능형 과학교실 ON’ 포털 주소(URL)를 입력하세요.\n(한 번 설정하면 저장됩니다. 다시 바꾸려면 Shift+클릭)", url || "https://");
+        if (e.shiftKey) {
+          url = prompt("‘지능형 과학교실 ON’ 포털 주소(URL)를 입력하세요.", url || "https://kfcman.link/on");
           if (!url) return;
           url = url.trim(); if (!/^https?:\/\//.test(url)) url = "https://" + url;
           localStorage.setItem("scibot_on_url", url);
         }
-        window.open(url, "_blank", "noopener");
+        window.open(url || "https://kfcman.link/on", "_blank", "noopener");
       });
     });
   });

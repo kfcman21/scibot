@@ -132,7 +132,7 @@ img { max-width: 100%; display: block; }
 .hero__visual { position: relative; }
 .codecard {
   background: #1f1c18; border-radius: var(--radius); box-shadow: var(--shadow-lg);
-  overflow: hidden; transform: rotate(-1.2deg);
+  overflow: hidden;
 }
 .codecard__bar { display: flex; align-items: center; gap: 7px; padding: 12px 16px; background: #2a2621; }
 .codecard__bar i { width: 11px; height: 11px; border-radius: 50%; display: inline-block; }
