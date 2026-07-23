@@ -18,17 +18,27 @@
       .then(function (d) { return d.choices[0].message.content; });
   }
 
-  function ask(messages) {
+  // 서버 프록시(키는 서버 보관) — 배포 사이트에서 브리지 없이 동작
+  function serverChat(message, hist, context) {
+    var url = (location.hostname === "kfcman.link") ? "/api/scibot/chat" : "https://kfcman.link/api/scibot/chat";
+    return fetch(url, {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message: message, history: hist, context: context })
+    }).then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
+      .then(function (res) {
+        if (res.ok && res.j.reply) return res.j.reply;
+        throw new Error(res.j.error || "server error");
+      });
+  }
+
+  // 우선순위: 로컬 브리지(연결 시) → 서버 프록시 → 직접 키
+  function respond(text, ctx) {
     var R = window.SciBotRobot;
-    if (R && R.connected && R.ai) return R.chatViaBridge(messages);
-    if (R && R.connect && !R.connected) {
-      // 로봇을 연결 안 했어도 브리지 소켓만 열어 AI 사용 시도
-      return R.connect().then(function () {
-        if (R.ai) return R.chatViaBridge(messages);
-        return directChat(messages);
-      }).catch(function () { return directChat(messages); });
-    }
-    return directChat(messages);
+    if (R && R.connected && R.ai) return R.chatViaBridge([systemPrompt()].concat(history));
+    return serverChat(text, history.slice(0, -1), ctx).catch(function (e) {
+      if (localStorage.getItem("scibot_upstage_key")) return directChat([systemPrompt()].concat(history));
+      throw e;
+    });
   }
 
   function systemPrompt() {
@@ -89,14 +99,14 @@
     if (history.length > 12) history = history.slice(-12);
 
     var thinking = addMsg("bot", "생각 중…");
-    var messages = [systemPrompt()].concat(history);
-    ask(messages).then(function (reply) {
+    var ctx = (window.SciBotContext && window.SciBotContext()) || {};
+    respond(text, ctx).then(function (reply) {
       thinking.textContent = reply;
       history.push({ role: "assistant", content: reply });
     }).catch(function (e) {
       var msg = (e && e.message) || "";
       if (msg === "no-key") thinking.textContent = "API 키가 없어요. ⚙ 버튼으로 Upstage 키를 입력하거나 브리지에 설정하세요.";
-      else if (/Failed to fetch|HTTP 40|CORS/i.test(msg)) thinking.textContent = "직접 호출이 차단된 것 같아요(CORS). 브리지를 --upstage-key 로 실행해 프록시로 사용하세요.";
+      else if (/Failed to fetch|HTTP 40|CORS/i.test(msg)) thinking.textContent = "AI 연결에 문제가 있어요. 잠시 후 다시 시도해 주세요.";
       else thinking.textContent = "오류가 발생했어요: " + msg;
     });
   }
