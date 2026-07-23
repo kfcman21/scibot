@@ -489,6 +489,27 @@ img { max-width: 100%; display: block; }
 .ms-card__head { padding: 13px 16px; border-bottom: 1px solid var(--line); font-weight: 800; font-size: .95rem; }
 .ms-card__body { padding: 16px; }
 
+/* robot selector */
+.ms-robots { display: flex; gap: 8px; margin-bottom: 14px; }
+.ms-robot {
+  flex: 1; cursor: pointer; font-family: var(--font); font-weight: 800; font-size: .92rem;
+  padding: 10px 8px; border-radius: 12px; border: 2px solid var(--line); background: var(--white);
+  color: var(--ink-500); transition: all .15s;
+}
+.ms-robot:hover { border-color: var(--amber-400); }
+.ms-robot.is-active { border-color: var(--ink-900); background: var(--ink-900); color: #fff; }
+
+/* live sensor monitor — 로봇별 가로 한 줄, 위/아래로 구분 */
+.ms-monitor { display: flex; flex-direction: column; gap: 16px; }
+.msm-tile { background: var(--paper-2); border-radius: 12px; padding: 12px 14px; flex: 0 0 auto; min-width: 104px; }
+.msm-tile .msm-name { font-size: .78rem; color: var(--ink-500); font-weight: 700; }
+.msm-tile .msm-val { font-size: 1.5rem; font-weight: 900; line-height: 1.2; }
+.msm-tile .msm-val small { font-size: .8rem; font-weight: 700; color: var(--ink-500); }
+.msm-bar { height: 6px; border-radius: 999px; background: #e6ddca; margin-top: 8px; overflow: hidden; }
+.msm-bar span { display: block; height: 100%; border-radius: 999px; transition: width .25s ease; }
+.ms-monitor.is-off { opacity: .45; }
+.ms-monitor-empty { color: var(--ink-300); font-size: .9rem; padding: 18px 4px; }
+
 /* sensor picker */
 .ms-sensors { display: flex; flex-direction: column; gap: 8px; }
 .ms-sensor {
@@ -554,6 +575,108 @@ img { max-width: 100%; display: block; }
   .ms-lower { grid-template-columns: 1fr; }
   .ms-stats { grid-template-columns: repeat(2, 1fr); }
 }
+
+/* ---------- Experiment banner (측정 실험 배너) ---------- */
+.ms-exp { max-width: 1300px; margin: 8px auto 0; padding: 0 18px; }
+.ms-exp__card {
+  background: linear-gradient(135deg, var(--ink-900), #34302a); color: #fff;
+  border-radius: var(--radius); padding: 22px 24px; box-shadow: var(--shadow-md); position: relative; overflow: hidden;
+}
+.ms-exp__card::before {
+  content: ""; position: absolute; inset: 0;
+  background: radial-gradient(60% 90% at 90% 0%, rgba(255,159,28,.25), transparent 60%);
+}
+.ms-exp__card > * { position: relative; }
+.ms-exp__badges { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+.ms-exp__badges span { font-size: .76rem; font-weight: 800; padding: 4px 10px; border-radius: 999px; background: rgba(255,255,255,.15); }
+.ms-exp h2 { font-size: 1.4rem; margin-bottom: 8px; }
+.ms-exp__goal { color: #e6ddcf; font-size: .98rem; margin-bottom: 14px; }
+.ms-exp__steps { display: grid; gap: 8px; }
+.ms-exp__steps li { list-style: none; display: flex; gap: 10px; align-items: flex-start; font-size: .92rem; color: #f3eee4; }
+.ms-exp__steps b { flex: 0 0 auto; width: 22px; height: 22px; border-radius: 7px; background: var(--amber-500); color: #3a2400; display: grid; place-items: center; font-size: .8rem; }
+
+/* ---------- Report form (실험 보고서) ---------- */
+.ms-report-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+.ms-field { display: flex; flex-direction: column; gap: 5px; }
+.ms-field > span { font-size: .82rem; font-weight: 800; color: var(--ink-700); }
+.ms-field input, .ms-field textarea {
+  border: 1.5px solid var(--line); border-radius: 10px; padding: 9px 12px; font-family: var(--font);
+  font-size: .92rem; background: var(--white); color: var(--ink-900); resize: vertical;
+}
+.ms-field input:focus, .ms-field textarea:focus { outline: none; border-color: var(--amber-400); }
+.ms-field--full { margin-bottom: 12px; }
+.ms-report-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+@media (max-width: 640px) { .ms-report-grid { grid-template-columns: 1fr; } }
+
+/* ---------- Robot connect widget (per-robot) ---------- */
+.robot-connect { display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.rc-btn { display: inline-flex; align-items: center; gap: 7px; }
+.rc-dot { width: 9px; height: 9px; border-radius: 50%; background: #b6ab98; flex: 0 0 auto; }
+.rc-off  { border-color: var(--line) !important; color: var(--ink-500) !important; }
+.rc-off  .rc-dot { background: #b6ab98; }
+.rc-wait { border-color: var(--amber-400) !important; color: var(--amber-600) !important; }
+.rc-wait .rc-dot { background: var(--amber-500); animation: pulse 1s infinite; }
+.rc-on   { border-color: var(--teal-500) !important; color: var(--teal-600) !important; background: #eafaf7 !important; }
+.rc-on   .rc-dot { background: var(--teal-500); animation: pulse 1.2s infinite; }
+.rc-err  { font-size: .78rem; color: var(--danger); font-weight: 700; max-width: 240px; }
+
+/* ---------- Live monitor groups (로봇별 구분) ---------- */
+.msm-group { margin-bottom: 16px; }
+.msm-group:last-child { margin-bottom: 0; }
+.msm-gtitle {
+  display: inline-flex; align-items: center; gap: 6px; font-weight: 800; font-size: .9rem;
+  padding: 4px 12px; border-radius: 999px; margin-bottom: 10px;
+}
+.msm-gtitle.h { background: var(--amber-100); color: var(--amber-600); }
+.msm-gtitle.c { background: #d5f2ee; color: var(--teal-600); }
+.msm-grid { display: flex; flex-wrap: nowrap; gap: 10px; overflow-x: auto; padding-bottom: 6px; }
+
+/* ---------- Auth widget ---------- */
+.auth-who { font-weight: 800; font-size: .85rem; color: var(--ink-700); align-self: center; margin-right: 4px; white-space: nowrap; }
+
+/* ---------- Login page ---------- */
+.login-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.login-card { background: var(--white); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow-sm); padding: 28px 24px; }
+.login-card__ico { font-size: 2.4rem; margin-bottom: 8px; }
+.login-card h2 { font-size: 1.3rem; margin-bottom: 4px; }
+.login-card > p { color: var(--ink-500); font-size: .92rem; margin-bottom: 16px; }
+.login-err { color: var(--danger); font-weight: 700; font-size: .86rem; margin-top: 10px; min-height: 18px; }
+.class-code {
+  font-family: var(--mono); font-weight: 800; letter-spacing: .12em; font-size: 1rem;
+  background: var(--amber-100); color: var(--amber-600); padding: 3px 12px; border-radius: 8px;
+}
+.rep-chip {
+  border: 1px solid var(--line); background: var(--paper-2); border-radius: 999px; padding: 4px 10px;
+  font-size: .78rem; font-weight: 700; cursor: pointer; font-family: var(--font); margin: 2px 0;
+}
+.rep-chip:hover { border-color: var(--amber-400); color: var(--amber-600); }
+@media (max-width: 640px) { .login-grid { grid-template-columns: 1fr; } }
+
+/* ---------- Chatbot (실험 도우미) ---------- */
+.chatfab {
+  position: fixed; right: 20px; bottom: 20px; z-index: 200; width: 58px; height: 58px; border-radius: 50%;
+  border: 0; cursor: pointer; font-size: 1.6rem; background: linear-gradient(135deg, var(--amber-500), var(--amber-400));
+  box-shadow: var(--shadow-lg); transition: transform .15s;
+}
+.chatfab:hover { transform: scale(1.08); }
+.chatwin {
+  position: fixed; right: 20px; bottom: 88px; z-index: 200; width: 340px; max-width: calc(100vw - 40px);
+  height: 460px; max-height: calc(100vh - 130px); background: var(--white); border: 1px solid var(--line);
+  border-radius: 18px; box-shadow: var(--shadow-lg); display: none; flex-direction: column; overflow: hidden;
+}
+.chatwin.is-open { display: flex; }
+.chat-head { display: flex; align-items: center; justify-content: space-between; padding: 13px 16px; background: var(--ink-900); color: #fff; font-weight: 800; }
+.chat-head small { font-weight: 600; opacity: .7; font-size: .72rem; margin-left: 4px; }
+.chat-actions button { background: none; border: 0; color: #fff; font-size: 1.1rem; cursor: pointer; margin-left: 6px; opacity: .85; }
+.chat-actions button:hover { opacity: 1; }
+.chat-msgs { flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 10px; background: var(--paper-2); }
+.chat-msg { max-width: 82%; padding: 9px 13px; border-radius: 14px; font-size: .9rem; line-height: 1.5; white-space: pre-wrap; }
+.chat-bot { align-self: flex-start; background: var(--white); border: 1px solid var(--line); border-bottom-left-radius: 4px; }
+.chat-user { align-self: flex-end; background: var(--amber-500); color: #3a2400; border-bottom-right-radius: 4px; font-weight: 600; }
+.chat-input { display: flex; gap: 8px; padding: 10px; border-top: 1px solid var(--line); }
+.chat-input input { flex: 1; border: 1.5px solid var(--line); border-radius: 999px; padding: 9px 14px; font-family: var(--font); font-size: .9rem; }
+.chat-input input:focus { outline: none; border-color: var(--amber-400); }
+.chat-input button { border: 0; background: var(--amber-500); color: #3a2400; font-weight: 800; border-radius: 999px; padding: 0 16px; cursor: pointer; font-family: var(--font); }
 
 /* ---------- Reveal on scroll ---------- */
 .reveal { opacity: 0; transform: translateY(22px); transition: opacity .6s ease, transform .6s ease; }

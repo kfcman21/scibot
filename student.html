@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>내 기록 · SciBot</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔬</text></svg>" />
+</head>
+<body class="pg-body">
+  <header class="header">
+    <div class="container">
+      <nav class="nav">
+        <a class="brand" href="index.html#top"><span class="brand__logo"></span>Sci<b>Bot</b></a>
+        <div class="nav__cta" style="margin-left:auto" data-auth></div>
+      </nav>
+    </div>
+  </header>
+
+  <div style="max-width:900px;margin:0 auto;padding:26px 18px">
+    <span class="eyebrow">🧑‍🎓 내 측정 기록</span>
+    <h1 style="font-size:clamp(1.5rem,3vw,2rem);margin:12px 0 4px" id="s-greet">내 기록</h1>
+    <p style="color:var(--ink-500);margin-bottom:20px">측정 실험을 진행하고 <b>실험 보고서</b>를 저장하면 여기에 모입니다.</p>
+
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:22px">
+      <a class="btn btn--primary" href="index.html#gallery">🧪 측정 실험 고르기</a>
+      <a class="btn btn--ghost" href="measure.html">📈 바로 측정하기</a>
+    </div>
+
+    <div id="reports"></div>
+  </div>
+
+  <script src="assets/js/report.js"></script>
+  <script src="assets/js/auth.js"></script>
+  <script>
+    (function () {
+      var A = window.SciBotAuth;
+      var s = A.getSession();
+      if (!s || s.role !== "student") { location.href = "login.html"; return; }
+      document.getElementById("s-greet").textContent = s.student + " · " + s.className;
+
+      function esc(x) { return String(x == null ? "" : x).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+
+      var reps = A.studentReports();
+      var wrap = document.getElementById("reports");
+      if (!reps.length) {
+        wrap.innerHTML = '<div class="ms-card"><div class="ms-card__body" style="text-align:center;color:var(--ink-300);padding:28px">아직 저장한 보고서가 없습니다.<br>측정 실험을 골라 측정한 뒤 <b>내 기록에 저장</b>을 눌러 보세요.</div></div>';
+        return;
+      }
+      wrap.innerHTML = '<div class="gallery">' + reps.map(function (r, i) {
+        var st = r.stats || {};
+        return '<div class="card" style="cursor:default">' +
+          '<div class="card__top"><div class="card__badges" style="margin-top:18px">' +
+            '<span class="badge badge--hamster">' + esc(r.robot) + '</span>' +
+            '<span class="badge badge--level">' + esc(r.sensor) + '</span></div></div>' +
+          '<h3 style="padding-top:4px">' + esc(r.title) + '</h3>' +
+          '<p>📅 ' + esc(r.date) + ' · 측정 ' + (st.n || 0) + '회 · 평균 ' + (st.avg || "–") + (r.unit || "") + '</p>' +
+          '<div class="card__foot"><span class="card__meta">🔬 ' + esc(r.sci || "") + '</span>' +
+          '<button class="card__link" data-i="' + i + '" style="background:none;border:0;cursor:pointer;font:inherit">보고서 보기 →</button></div>' +
+          '</div>';
+      }).join("") + '</div>';
+
+      wrap.querySelectorAll("[data-i]").forEach(function (b) {
+        b.addEventListener("click", function () {
+          var w = window.open("", "_blank"); if (!w) { alert("팝업을 허용해 주세요."); return; }
+          w.document.write(window.SciBotBuildReport(reps[+b.dataset.i])); w.document.close();
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

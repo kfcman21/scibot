@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>로그인 · SciBot 지능형 과학교실</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔬</text></svg>" />
+</head>
+<body class="pg-body">
+  <header class="header">
+    <div class="container">
+      <nav class="nav">
+        <a class="brand" href="index.html#top"><span class="brand__logo"></span>Sci<b>Bot</b></a>
+        <div class="nav__cta" style="margin-left:auto"><a class="btn btn--ghost btn--sm" href="index.html">← 홈으로</a></div>
+      </nav>
+    </div>
+  </header>
+
+  <div style="max-width:900px;margin:0 auto;padding:30px 18px">
+    <div style="text-align:center;margin-bottom:28px">
+      <span class="eyebrow">🔑 로그인</span>
+      <h1 style="font-size:clamp(1.5rem,3vw,2rem);margin:14px 0 6px">교사·학생 로그인</h1>
+      <p style="color:var(--ink-500)">선생님은 반을 만들어 코드를 발급하고, 학생은 반 코드로 접속해 측정 보고서를 저장합니다.</p>
+    </div>
+
+    <div class="login-grid">
+      <!-- 교사 -->
+      <div class="login-card">
+        <div class="login-card__ico">👩‍🏫</div>
+        <h2>교사 로그인</h2>
+        <p>반을 만들고 학생들의 측정 보고서를 확인합니다.</p>
+        <label class="ms-field ms-field--full"><span>선생님 성함</span>
+          <input id="t-name" type="text" placeholder="예: 박찬규" /></label>
+        <button class="btn btn--primary" id="t-login" style="width:100%">교사로 시작하기</button>
+        <p class="login-err" id="t-err"></p>
+      </div>
+
+      <!-- 학생 -->
+      <div class="login-card">
+        <div class="login-card__ico">🧑‍🎓</div>
+        <h2>학생 로그인</h2>
+        <p>선생님께 받은 <b>반 코드</b>와 이름으로 접속합니다.</p>
+        <label class="ms-field ms-field--full"><span>반 코드</span>
+          <input id="s-code" type="text" placeholder="예: ABC123" maxlength="6" style="text-transform:uppercase;letter-spacing:.15em;font-weight:800" /></label>
+        <label class="ms-field ms-field--full"><span>이름</span>
+          <input id="s-name" type="text" placeholder="이름" /></label>
+        <button class="btn btn--teal" id="s-login" style="width:100%">학생으로 접속하기</button>
+        <p class="login-err" id="s-err"></p>
+      </div>
+    </div>
+  </div>
+
+  <script src="assets/js/auth.js"></script>
+  <script>
+    (function () {
+      var A = window.SciBotAuth;
+      // 이미 로그인돼 있으면 이동
+      var s = A.getSession();
+      if (s) location.href = s.role === "teacher" ? "teacher.html" : "student.html";
+
+      document.getElementById("t-login").addEventListener("click", function () {
+        var name = document.getElementById("t-name").value.trim();
+        if (!name) { document.getElementById("t-err").textContent = "성함을 입력하세요."; return; }
+        A.teacherLogin(name); location.href = "teacher.html";
+      });
+      document.getElementById("s-login").addEventListener("click", function () {
+        var res = A.studentLogin(document.getElementById("s-code").value, document.getElementById("s-name").value);
+        if (res.error) { document.getElementById("s-err").textContent = res.error; return; }
+        location.href = "student.html";
+      });
+      document.getElementById("s-code").addEventListener("keydown", function (e) { if (e.key === "Enter") document.getElementById("s-login").click(); });
+      document.getElementById("s-name").addEventListener("keydown", function (e) { if (e.key === "Enter") document.getElementById("s-login").click(); });
+      document.getElementById("t-name").addEventListener("keydown", function (e) { if (e.key === "Enter") document.getElementById("t-login").click(); });
+    })();
+  </script>
+</body>
+</html>

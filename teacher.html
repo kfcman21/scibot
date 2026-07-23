@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>교사 대시보드 · SciBot</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔬</text></svg>" />
+</head>
+<body class="pg-body">
+  <header class="header">
+    <div class="container">
+      <nav class="nav">
+        <a class="brand" href="index.html#top"><span class="brand__logo"></span>Sci<b>Bot</b></a>
+        <div class="nav__cta" style="margin-left:auto" data-auth></div>
+      </nav>
+    </div>
+  </header>
+
+  <div style="max-width:960px;margin:0 auto;padding:26px 18px">
+    <span class="eyebrow">👩‍🏫 교사 대시보드</span>
+    <h1 style="font-size:clamp(1.5rem,3vw,2rem);margin:12px 0 4px" id="t-greet">선생님 대시보드</h1>
+    <p style="color:var(--ink-500);margin-bottom:22px">반을 만들어 <b>반 코드</b>를 학생에게 알려주고, 학생들의 측정 보고서를 확인하세요.</p>
+
+    <div class="ms-card" style="margin-bottom:22px">
+      <div class="ms-card__head">➕ 새 반 만들기</div>
+      <div class="ms-card__body">
+        <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end">
+          <label class="ms-field" style="flex:1;min-width:200px"><span>반 이름</span>
+            <input id="c-name" type="text" placeholder="예: 4학년 1반 과학" /></label>
+          <button class="btn btn--primary" id="c-make">반 만들기</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="classes"></div>
+  </div>
+
+  <script src="assets/js/report.js"></script>
+  <script src="assets/js/auth.js"></script>
+  <script>
+    (function () {
+      var A = window.SciBotAuth;
+      var s = A.getSession();
+      if (!s || s.role !== "teacher") { location.href = "login.html"; return; }
+      document.getElementById("t-greet").textContent = s.teacher + " 선생님 대시보드";
+
+      function esc(x) { return String(x == null ? "" : x).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+
+      function render() {
+        var classes = A.teacherClasses();
+        var wrap = document.getElementById("classes");
+        if (!classes.length) { wrap.innerHTML = '<p style="color:var(--ink-300);text-align:center;padding:20px">아직 만든 반이 없습니다. 위에서 반을 만들어 보세요.</p>'; return; }
+        wrap.innerHTML = classes.map(function (c) {
+          var names = Object.keys(c.students);
+          var studentRows = names.length ? names.map(function (nm) {
+            var reps = c.students[nm].reports || [];
+            var chips = reps.map(function (r, i) {
+              return '<button class="rep-chip" data-code="' + c.code + '" data-stu="' + esc(nm) + '" data-i="' + i + '">' + esc(r.title) + ' · ' + esc(r.date) + '</button>';
+            }).join(" ") || '<span style="color:var(--ink-300);font-size:.85rem">기록 없음</span>';
+            return '<tr><td style="font-weight:700">' + esc(nm) + '</td><td>' + reps.length + '</td><td>' + chips + '</td></tr>';
+          }).join("") : '<tr><td colspan="3" style="color:var(--ink-300)">아직 접속한 학생이 없습니다.</td></tr>';
+          return '<div class="ms-card" style="margin-bottom:18px">' +
+            '<div class="ms-card__head" style="display:flex;align-items:center;gap:12px">' +
+              '<span>🏫 ' + esc(c.className) + '</span>' +
+              '<span class="class-code">' + c.code + '</span>' +
+              '<span style="font-size:.8rem;color:var(--ink-300);font-weight:600">학생 ' + names.length + '명</span>' +
+              '<button class="btn btn--ghost btn--sm" data-del="' + c.code + '" style="margin-left:auto">삭제</button>' +
+            '</div>' +
+            '<div class="ms-card__body">' +
+              '<p style="font-size:.85rem;color:var(--ink-500);margin-bottom:12px">학생에게 반 코드 <b>' + c.code + '</b> 를 알려주세요. (로그인 화면 → 학생 로그인)</p>' +
+              '<div class="ms-table-scroll"><table class="ms-table"><thead><tr><th>학생</th><th>기록 수</th><th>보고서</th></tr></thead><tbody>' + studentRows + '</tbody></table></div>' +
+            '</div></div>';
+        }).join("");
+
+        wrap.querySelectorAll(".rep-chip").forEach(function (b) {
+          b.addEventListener("click", function () {
+            var c = A.getClass(b.dataset.code);
+            var rec = c.students[b.dataset.stu].reports[+b.dataset.i];
+            var w = window.open("", "_blank"); if (!w) { alert("팝업을 허용해 주세요."); return; }
+            w.document.write(window.SciBotBuildReport(rec)); w.document.close();
+          });
+        });
+        wrap.querySelectorAll("[data-del]").forEach(function (b) {
+          b.addEventListener("click", function () { if (confirm("이 반을 삭제할까요? (학생 기록도 사라집니다)")) { A.deleteClass(b.dataset.del); render(); } });
+        });
+      }
+
+      document.getElementById("c-make").addEventListener("click", function () {
+        var code = A.createClass(document.getElementById("c-name").value);
+        document.getElementById("c-name").value = "";
+        render();
+        if (code) alert("반이 만들어졌습니다!\n반 코드: " + code + "\n학생에게 이 코드를 알려주세요.");
+      });
+      render();
+    })();
+  </script>
+</body>
+</html>

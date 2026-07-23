@@ -17,15 +17,14 @@
       <nav class="nav" id="nav">
         <a class="brand" href="index.html#top"><span class="brand__logo"></span>Sci<b>Bot</b></a>
         <div class="nav__links">
-          <a href="index.html#dict">블록사전</a>
-          <a href="index.html#course">기초과정</a>
-          <a href="index.html#gallery">활동 갤러리</a>
-          <a href="playground.html">실습하기</a>
+          <a href="index.html#steps">실험 방법</a>
+          <a href="index.html#robots">로봇 연계</a>
+          <a href="index.html#gallery">측정 실험</a>
+          <a href="index.html#smart">지능형 과학교실</a>
           <a href="measure.html">측정·그래프</a>
         </div>
-        <div class="nav__cta">
-          <a class="btn btn--ghost btn--sm" href="index.html">← 홈으로</a>
-        </div>
+        <div class="nav__cta" data-auth style="margin-right:6px"></div>
+        <div class="nav__cta robot-connect" data-robot-connect></div>
         <button class="nav__toggle" id="navToggle" aria-label="메뉴 열기">☰</button>
       </nav>
     </div>
@@ -38,16 +37,23 @@
     <p style="color:var(--ink-500);max-width:60em">
       센서를 고르고 <b>예측값</b>을 적은 뒤 <b>▶ 측정 시작</b>을 누르면, 로봇 센서 값이 실시간 그래프로 그려집니다.
       환경을 조작하며 그래프가 어떻게 변하는지 관찰하고, 예측과 실제 결과를 비교해 보세요.
-      <span style="color:var(--ink-300)">(실제 하드웨어 없이 시뮬레이션됩니다.)</span>
+      <span style="color:var(--ink-300)">(기본은 시뮬레이션. 오른쪽 위 <b>🔌 로봇 연결</b> 시 실제 센서 값이 그려집니다.)</span>
     </p>
   </div>
+
+  <!-- 실험 배너 (갤러리에서 실험을 고르면 표시) -->
+  <div id="ms-exp" class="ms-exp" style="display:none"></div>
 
   <div class="ms-wrap">
     <!-- ===== SIDE ===== -->
     <aside class="ms-side">
       <div class="ms-card">
-        <div class="ms-card__head">1️⃣ 센서 고르기</div>
+        <div class="ms-card__head">1️⃣ 로봇 &amp; 센서 고르기</div>
         <div class="ms-card__body">
+          <div class="ms-robots" id="ms-robots">
+            <button class="ms-robot is-active" data-robot="hamster">🐹 햄스터S</button>
+            <button class="ms-robot" data-robot="cheese">🧀 치즈스틱</button>
+          </div>
           <div class="ms-sensors" id="ms-sensors"></div>
         </div>
       </div>
@@ -90,6 +96,15 @@
 
     <!-- ===== MAIN ===== -->
     <main class="ms-graph-wrap">
+      <div class="ms-graph-card" id="ms-monitor-card">
+        <div class="ms-graph-head">
+          <h3>📡 실시간 센서</h3>
+          <span class="ms-live" id="ms-mon-live"><span class="dot"></span> 대기</span>
+          <span id="ms-mon-hint" style="margin-left:auto;font-size:.82rem;color:var(--ink-300)">🔌 로봇을 연결하면 모든 센서 값이 실시간으로 표시됩니다</span>
+        </div>
+        <div class="ms-monitor" id="ms-monitor"></div>
+      </div>
+
       <div class="ms-graph-card">
         <div class="ms-graph-head">
           <h3 id="ms-graph-title">측정</h3>
@@ -105,35 +120,54 @@
         </div>
       </div>
 
-      <div class="ms-lower">
-        <div class="ms-graph-card">
-          <div class="ms-graph-head"><h3>📋 측정 기록</h3></div>
-          <div class="ms-table-scroll">
-            <table class="ms-table">
-              <thead><tr><th>시간 (초)</th><th>측정값</th></tr></thead>
-              <tbody id="ms-tbody"></tbody>
-            </table>
-          </div>
-          <div class="ms-export">
-            <button class="btn btn--ghost btn--sm" id="ms-csv">⬇ CSV로 내보내기</button>
-          </div>
+      <div class="ms-graph-card">
+        <div class="ms-graph-head"><h3>📋 측정 기록</h3>
+          <button class="btn btn--ghost btn--sm" id="ms-csv" style="margin-left:auto">⬇ CSV로 내보내기</button>
         </div>
+        <div class="ms-table-scroll">
+          <table class="ms-table">
+            <thead><tr><th>시간 (초)</th><th>측정값</th></tr></thead>
+            <tbody id="ms-tbody"></tbody>
+          </table>
+        </div>
+      </div>
 
-        <div class="ms-graph-card">
-          <div class="ms-graph-head"><h3>🐍 측정 코드</h3></div>
-          <div class="ms-pycode"><code id="ms-pycode"></code></div>
-          <p style="font-size:.82rem;color:var(--ink-500);margin-top:10px">실제 로봇에서는 이 코드로 센서 값을 읽어 같은 그래프를 그릴 수 있어요.</p>
+      <!-- ===== 실험 보고서 ===== -->
+      <div class="ms-graph-card ms-report" id="ms-report">
+        <div class="ms-graph-head"><h3>📝 실험 보고서</h3>
+          <span id="ms-report-who" style="margin-left:auto;font-size:.82rem;color:var(--ink-300)"></span>
+        </div>
+        <div class="ms-report-grid">
+          <label class="ms-field"><span>실험 제목</span><input id="rep-title" type="text" placeholder="실험 제목" /></label>
+          <label class="ms-field"><span>이름 / 모둠</span><input id="rep-name" type="text" placeholder="이름 또는 모둠" /></label>
+          <label class="ms-field"><span>날짜</span><input id="rep-date" type="date" /></label>
+          <label class="ms-field"><span>관련 과학 개념</span><input id="rep-sci" type="text" placeholder="예: 열·온도" /></label>
+        </div>
+        <label class="ms-field ms-field--full"><span>🔮 예측 · 가설 (측정 전에 적어요)</span>
+          <textarea id="rep-hypo" rows="2" placeholder="측정값이 얼마일지, 왜 그렇게 생각하는지 적어 보세요."></textarea></label>
+        <label class="ms-field ms-field--full"><span>🔬 관찰한 점</span>
+          <textarea id="rep-obs" rows="2" placeholder="측정하면서 값이 어떻게 변했는지 관찰한 내용을 적어요."></textarea></label>
+        <label class="ms-field ms-field--full"><span>✅ 알게 된 점 · 결론</span>
+          <textarea id="rep-conc" rows="2" placeholder="예측과 실제 결과를 비교하고 알게 된 점을 정리해요."></textarea></label>
+        <div class="ms-report-actions">
+          <button class="btn btn--primary" id="rep-make">📄 보고서 만들기 · 인쇄</button>
+          <button class="btn btn--ghost" id="rep-save">💾 내 기록에 저장</button>
+          <span id="rep-msg" style="font-size:.85rem;color:var(--teal-600);font-weight:700"></span>
         </div>
       </div>
 
       <div class="lesson__goal" style="max-width:none">
-        🔬 <b>탐구 활동 —</b> 예측값을 먼저 적고 측정을 시작하세요. 환경을 조작해 그래프가 오르내리는 과정을 관찰하고,
-        <b>예측 → 측정 → 결론</b>을 학습지에 기록하면 지능형 과학실 수업이 완성됩니다.
+        🔬 <b>탐구 흐름 —</b> ① 예측·가설을 적고 ② 측정을 시작해 그래프로 관찰한 뒤 ③ 결론을 정리하면
+        <b>실험 보고서</b>가 완성됩니다. [보고서 만들기]로 인쇄하거나 [내 기록에 저장]하세요.
       </div>
     </main>
   </div>
 
+  <script src="assets/js/experiments.js"></script>
+  <script src="assets/js/auth.js"></script>
+  <script src="assets/js/robot.js"></script>
   <script src="assets/js/measure.js"></script>
+  <script src="assets/js/chat.js"></script>
   <script>
     (function () {
       var nav = document.getElementById("nav"), t = document.getElementById("navToggle");
