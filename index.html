@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SciBot · 로봇으로 코딩하고 탐구하는 우리 반 실험실</title>
+  <meta name="description" content="치즈스틱과 햄스터S 로봇을 파이썬으로 제어하며 코딩과 과학을 함께 배우는 초·중등 SW·메이커 교육 플랫폼, SciBot." />
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤖</text></svg>" />
+</head>
+<body>
+
+  <!-- ================= HEADER ================= -->
+  <header class="header">
+    <div class="container">
+      <nav class="nav" id="nav">
+        <a class="brand" href="#top"><span class="brand__logo"></span>Sci<b>Bot</b></a>
+        <div class="nav__links">
+          <a href="#robots">로봇 소개</a>
+          <a href="#dict">블록사전</a>
+          <a href="#course">기초과정</a>
+          <a href="#gallery">활동 갤러리</a>
+          <a href="playground.html">실습하기</a>
+          <a href="measure.html">측정·그래프</a>
+        </div>
+        <div class="nav__cta">
+          <a class="btn btn--ghost btn--sm" href="#resources">교사 자료실</a>
+          <a class="btn btn--primary btn--sm" href="#course">지금 배우기</a>
+        </div>
+        <button class="nav__toggle" id="navToggle" aria-label="메뉴 열기">☰</button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ================= HERO ================= -->
+  <section class="hero" id="top">
+    <div class="hero__bg"></div>
+    <div class="container">
+      <div class="hero__text">
+        <span class="eyebrow">🔬 지능형 과학실 연계 · 초·중등 SW×과학</span>
+        <h1>블록으로 시작해<br />파이썬으로 자라는 <em>로봇 과학실</em></h1>
+        <p class="hero__lead">
+          치즈스틱과 햄스터S를 스크래치 블록으로 먼저 익히고, 똑같은 동작을 파이썬으로 확장합니다.
+          도형·빛·소리·온도 같은 <b>교과 과학 이론</b>을 로봇으로 직접 측정하고 탐구하는
+          지능형 과학실 연계 실습 플랫폼이에요.
+        </p>
+        <div class="hero__cta">
+          <a class="btn btn--primary" href="playground.html">🚀 실습 시작하기</a>
+          <a class="btn btn--ghost" href="#course">📖 기초과정 보기</a>
+        </div>
+        <div class="hero__stats">
+          <div><b>블록＋코드</b><span>같은 동작, 두 가지 방식</span></div>
+          <div><b>6차시</b><span>단계별 기초과정</span></div>
+          <div><b>2종</b><span>햄스터S · 치즈스틱</span></div>
+        </div>
+      </div>
+
+      <div class="hero__visual">
+        <div class="codecard">
+          <div class="codecard__bar"><i></i><i></i><i></i><span>hamster_line.py</span></div>
+          <pre><code><span class="tok-kw">from</span> robomation <span class="tok-kw">import</span> *
+
+hamster = <span class="tok-cls">HamsterS</span>()
+
+<span class="tok-kw">while</span> <span class="tok-kw">True</span>:
+    left  = hamster.<span class="tok-fn">left_floor</span>()
+    right = hamster.<span class="tok-fn">right_floor</span>()
+    <span class="tok-com"># 검은 선을 따라 주행</span>
+    <span class="tok-kw">if</span> left &lt; <span class="tok-num">50</span> <span class="tok-kw">and</span> right &lt; <span class="tok-num">50</span>:
+        hamster.<span class="tok-fn">wheels</span>(<span class="tok-num">30</span>, <span class="tok-num">30</span>)
+    <span class="tok-kw">elif</span> left &gt;= <span class="tok-num">50</span>:
+        hamster.<span class="tok-fn">wheels</span>(<span class="tok-num">30</span>, <span class="tok-num">0</span>)
+    <span class="tok-kw">else</span>:
+        hamster.<span class="tok-fn">wheels</span>(<span class="tok-num">0</span>, <span class="tok-num">30</span>)</code></pre>
+        </div>
+        <div class="hero__chip hero__chip--1"><span class="dot"></span> 실시간 센서 연결</div>
+        <div class="hero__chip hero__chip--2">🧀 치즈스틱 모듈 지원</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= STEPS ================= -->
+  <section class="section" id="steps">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">3단계면 충분해요</span>
+        <h2>연결하고, 코딩하고, 탐구하기</h2>
+        <p>복잡한 설정 없이 세 걸음이면 로봇 수업이 시작됩니다.</p>
+      </div>
+      <div class="steps">
+        <div class="step reveal">
+          <div class="step__n">1</div><span class="step__ico">🔌</span>
+          <h3>로봇 연결</h3>
+          <p>USB 동글을 꽂고 햄스터S나 치즈스틱의 전원을 켜면 자동으로 연결됩니다. 별도 페어링 과정이 필요 없어요.</p>
+        </div>
+        <div class="step reveal">
+          <div class="step__n">2</div><span class="step__ico">🧩</span>
+          <h3>블록 또는 코드</h3>
+          <p>처음엔 스크래치 블록으로, 익숙해지면 같은 동작을 파이썬으로. 학년과 수준에 맞춰 두 방식을 자유롭게 오갑니다.</p>
+        </div>
+        <div class="step reveal">
+          <div class="step__n">3</div><span class="step__ico">📈</span>
+          <h3>측정하고 그래프로 탐구</h3>
+          <p>센서 값을 <a href="measure.html" style="color:var(--amber-600);font-weight:800">실시간 그래프</a>로 측정합니다. 예측과 실제 결과를 비교하며 과학 개념을 탐구해 보세요.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= ROBOTS ================= -->
+  <section class="section section--tint" id="robots">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">두 대의 파트너</span>
+        <h2>햄스터S와 치즈스틱</h2>
+        <p>움직이며 탐험하는 로봇과, 조립하며 확장하는 보드. 목적에 맞게 골라 쓰세요.</p>
+      </div>
+      <div class="robots">
+        <article class="robot robot--hamster reveal">
+          <div class="robot__emoji">🐹</div>
+          <h3>햄스터S</h3>
+          <div class="robot__tag">움직이는 바퀴형 코딩 로봇</div>
+          <p>바퀴·LED·버저와 바닥·근접·조도·온도·가속도 센서를 갖춘 손바닥 로봇. 선 따라가기, 미로 탈출, 그림 그리기까지 몸으로 배우는 알고리즘 수업에 딱 맞습니다.</p>
+          <div class="robot__feats">
+            <span>바닥 센서</span><span>근접 센서</span><span>조도·온도</span><span>가속도</span><span>RGB LED</span><span>버저</span>
+          </div>
+          <div class="robot__watermark">🐹</div>
+        </article>
+        <article class="robot robot--cheese reveal">
+          <div class="robot__emoji">🧀</div>
+          <h3>치즈스틱</h3>
+          <div class="robot__tag">모듈로 확장하는 메이커 보드</div>
+          <p>스위치, RGB LED, 회전 볼륨, 소리·조도 센서, 모터, 네오픽셀, 5×5 매트릭스, 터치 피아노, 조이스틱, 환경 센서까지. 블록처럼 끼워 나만의 장치를 만드는 피지컬 컴퓨팅 보드입니다.</p>
+          <div class="robot__feats">
+            <span>CSD 모듈</span><span>NeoPixel</span><span>5×5 매트릭스</span><span>터치 피아노</span><span>조이스틱</span><span>환경 센서</span>
+          </div>
+          <div class="robot__watermark">🧀</div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= BLOCK DICTIONARY ================= -->
+  <section class="section" id="dict">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">블록사전</span>
+        <h2>블록 하나, 코드 한 줄</h2>
+        <p>스크래치 블록과 똑같은 동작의 파이썬 코드를 나란히 봅니다. 필요한 명령을 골라 익혀 보세요.</p>
+      </div>
+      <div class="filters" id="dict-filters">
+        <button class="chip is-active" data-cat="all">전체</button>
+        <button class="chip" data-cat="motion">동작</button>
+        <button class="chip" data-cat="looks">LED</button>
+        <button class="chip" data-cat="sound">소리</button>
+        <button class="chip" data-cat="sensing">센서</button>
+        <button class="chip" data-cat="control">제어</button>
+      </div>
+      <div class="dict" id="dict-grid"><!-- JS --></div>
+      <p style="text-align:center;color:var(--ink-300);font-size:.85rem;margin-top:22px">
+        ※ 스크래치 블록 표기는 확장 버전에 따라 조금씩 다를 수 있어요.
+      </p>
+    </div>
+  </section>
+
+  <!-- ================= COURSE ================= -->
+  <section class="section section--tint" id="course">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">기초과정 · 6차시</span>
+        <h2>단계별로 따라 하는 기초과정</h2>
+        <p>각 차시는 <b>블록</b>과 <b>파이썬</b> 두 가지 방식으로 제공됩니다. 위 토글로 원하는 방식을 골라 보세요.</p>
+        <div style="margin-top:22px" class="modetoggle" id="course-toggle" role="tablist">
+          <button data-mode="block" class="is-active">🧩 블록</button>
+          <button data-mode="python">🐍 파이썬</button>
+        </div>
+      </div>
+      <div class="course" id="course-list"><!-- JS --></div>
+    </div>
+  </section>
+
+  <!-- ================= GALLERY ================= -->
+  <section class="section" id="gallery">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">교과 과학 연계 수업</span>
+        <h2>활동 갤러리</h2>
+        <p>각 활동은 🔬 <b>교과 과학·수학 개념</b>과 연결됩니다. 로봇과 주제로 골라 보세요. 목표·예제 코드·학습지가 함께 제공됩니다.</p>
+      </div>
+      <div class="filters" id="filters">
+        <button class="chip is-active" data-filter="all">전체</button>
+        <button class="chip" data-filter="hamster">🐹 햄스터S</button>
+        <button class="chip" data-filter="cheese">🧀 치즈스틱</button>
+        <button class="chip" data-filter="algorithm">알고리즘</button>
+        <button class="chip" data-filter="sensor">센서·과학</button>
+        <button class="chip" data-filter="art">예술·창작</button>
+      </div>
+      <div class="gallery" id="gallery-grid"><!-- JS가 채웁니다 --></div>
+    </div>
+  </section>
+
+  <!-- ================= CODE SHOWCASE ================= -->
+  <section class="section section--tint" id="code">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">코드 예제</span>
+        <h2>파이썬 예제로 바로 실행</h2>
+        <p>robomation 라이브러리로 작성한 실제 예제. 더 다뤄보고 싶다면
+          <a href="playground.html" style="color:var(--amber-600);font-weight:800">실습 플레이그라운드 →</a> 에서 블록으로 만들어 보세요.</p>
+      </div>
+      <div class="codeshow reveal">
+        <div class="codetabs" id="codetabs"><!-- JS --></div>
+        <div class="codepanel">
+          <div class="codepanel__bar"><i></i><i></i><i></i><span id="codeFile">example.py</span></div>
+          <pre><code id="codeBody"></code></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= RESOURCES ================= -->
+  <section class="section" id="resources">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">교사 자료실</span>
+        <h2>수업 준비, 여기서 끝</h2>
+        <p>40분 수업안부터 학습지·안전 카드·평가 루브릭까지 한 번에.</p>
+      </div>
+      <div class="reslist">
+        <div class="res reveal"><div class="res__ico">📋</div><h3>40분 수업안</h3><p>차시별 도입–전개–정리 흐름과 성취기준 매핑이 담긴 지도안.</p></div>
+        <div class="res reveal"><div class="res__ico">📝</div><h3>학생 학습지</h3><p>예측–관찰–결론을 기록하는 탐구 활동지와 코드 빈칸 채우기.</p></div>
+        <div class="res reveal"><div class="res__ico">🛡️</div><h3>안전 카드</h3><p>배터리·모터·조립 시 주의사항을 그림으로 정리한 안내문.</p></div>
+        <div class="res reveal"><div class="res__ico">📊</div><h3>평가 루브릭</h3><p>코딩·협업·탐구 역량을 3단계로 평가하는 관찰 기록표.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= TOOLS ================= -->
+  <section class="section section--tint" id="tools">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">코딩 도구</span>
+        <h2>어디서든 코드로 연결</h2>
+        <p>블록부터 파이썬까지, 학년과 목표에 맞는 도구를 골라 쓰세요.</p>
+      </div>
+      <div class="tools">
+        <div class="tool reveal"><span class="tool__ico">🐍</span><div><b>Python (robomation)</b><span>pip 설치형 정식 라이브러리</span></div></div>
+        <div class="tool reveal"><span class="tool__ico">🧩</span><div><b>블록 코딩</b><span>처음 배우는 학생을 위한 블록</span></div></div>
+        <div class="tool reveal"><span class="tool__ico">🎥</span><div><b>AI 확장 모듈</b><span>얼굴·손·사물·음성 인식</span></div></div>
+        <div class="tool reveal"><span class="tool__ico">📓</span><div><b>Jupyter / IDE</b><span>VS Code·주피터에서 실행</span></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= CTA ================= -->
+  <section class="section" id="start">
+    <div class="container reveal">
+      <div class="cta-band">
+        <h2>오늘, 우리 반 지능형 과학실을 열어보세요</h2>
+        <p>햄스터S와 치즈스틱, 그리고 블록과 파이썬 한 줄이면 준비 완료입니다.</p>
+        <div class="hero__cta" style="justify-content:center">
+          <a class="btn btn--primary" href="playground.html">🧪 실습 시작하기</a>
+          <a class="btn btn--ghost" href="https://github.com/RobomationLAB/Robomation_Python" target="_blank" rel="noopener">📦 라이브러리 설치 안내</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= FOOTER ================= -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__grid">
+        <div class="footer__brand">
+          <a class="brand" href="#top"><span class="brand__logo"></span>Sci<b>Bot</b></a>
+          <p>치즈스틱과 햄스터S를 파이썬으로 제어하며 코딩과 과학을 함께 배우는 로봇 교육 플랫폼입니다.</p>
+        </div>
+        <div><h4>둘러보기</h4><ul>
+          <li><a href="#robots">로봇 소개</a></li>
+          <li><a href="#course">기초과정</a></li>
+          <li><a href="playground.html">실습하기</a></li>
+          <li><a href="measure.html">측정·그래프</a></li>
+        </ul></div>
+        <div><h4>자료</h4><ul>
+          <li><a href="#resources">교사 자료실</a></li>
+          <li><a href="#tools">코딩 도구</a></li>
+          <li><a href="https://github.com/RobomationLAB/Robomation_Python" target="_blank" rel="noopener">GitHub 라이브러리</a></li>
+          <li><a href="https://github.com/RobomationLAB/Robomation_Python/wiki" target="_blank" rel="noopener">API 문서</a></li>
+        </ul></div>
+        <div><h4>로봇</h4><ul>
+          <li><a href="#robots">🐹 햄스터S</a></li>
+          <li><a href="#robots">🧀 치즈스틱</a></li>
+          <li><a href="#tools">AI 확장 모듈</a></li>
+        </ul></div>
+      </div>
+      <div class="footer__bottom">
+        <span>© 2026 SciBot · 교육용 데모 사이트</span>
+        <span>Powered by <a href="https://github.com/RobomationLAB/Robomation_Python" target="_blank" rel="noopener" style="color:var(--amber-600);font-weight:700">robomation</a> (LGPL-2.1) · Robomation / Kwang-Hyun Park</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/js/main.js"></script>
+</body>
+</html>

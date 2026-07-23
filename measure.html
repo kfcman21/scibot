@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>측정·그래프 탐구 · SciBot 지능형 과학실</title>
+  <meta name="description" content="햄스터S·치즈스틱 센서 값을 실시간으로 측정하고 그래프로 탐구합니다. 예측하고, 측정하고, 결과를 비교하는 지능형 과학실 실습." />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤖</text></svg>" />
+</head>
+<body class="pg-body">
+
+  <!-- ===== HEADER ===== -->
+  <header class="header">
+    <div class="container">
+      <nav class="nav" id="nav">
+        <a class="brand" href="index.html#top"><span class="brand__logo"></span>Sci<b>Bot</b></a>
+        <div class="nav__links">
+          <a href="index.html#dict">블록사전</a>
+          <a href="index.html#course">기초과정</a>
+          <a href="index.html#gallery">활동 갤러리</a>
+          <a href="playground.html">실습하기</a>
+          <a href="measure.html">측정·그래프</a>
+        </div>
+        <div class="nav__cta">
+          <a class="btn btn--ghost btn--sm" href="index.html">← 홈으로</a>
+        </div>
+        <button class="nav__toggle" id="navToggle" aria-label="메뉴 열기">☰</button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ===== INTRO ===== -->
+  <div style="max-width:1300px;margin:0 auto;padding:22px 18px 6px">
+    <span class="eyebrow">📈 센서 · 측정 · 그래프 탐구</span>
+    <h1 style="font-size:clamp(1.5rem,3vw,2rem);margin:14px 0 6px">측정하고 탐구하는 우리 반 과학실험실</h1>
+    <p style="color:var(--ink-500);max-width:60em">
+      센서를 고르고 <b>예측값</b>을 적은 뒤 <b>▶ 측정 시작</b>을 누르면, 로봇 센서 값이 실시간 그래프로 그려집니다.
+      환경을 조작하며 그래프가 어떻게 변하는지 관찰하고, 예측과 실제 결과를 비교해 보세요.
+      <span style="color:var(--ink-300)">(실제 하드웨어 없이 시뮬레이션됩니다.)</span>
+    </p>
+  </div>
+
+  <div class="ms-wrap">
+    <!-- ===== SIDE ===== -->
+    <aside class="ms-side">
+      <div class="ms-card">
+        <div class="ms-card__head">1️⃣ 센서 고르기</div>
+        <div class="ms-card__body">
+          <div class="ms-sensors" id="ms-sensors"></div>
+        </div>
+      </div>
+
+      <div class="ms-card">
+        <div class="ms-card__head">2️⃣ 예측하기</div>
+        <div class="ms-card__body">
+          <div class="ms-predict">
+            <span style="font-size:.9rem;color:var(--ink-500)">측정값은 얼마일까요?</span>
+            <input type="number" id="ms-predict-in" placeholder="예측" />
+          </div>
+          <p style="font-size:.8rem;color:var(--ink-300);margin-top:8px">그래프에 파란 점선으로 표시됩니다.</p>
+        </div>
+      </div>
+
+      <div class="ms-card">
+        <div class="ms-card__head">3️⃣ 환경 조작 (탐구)</div>
+        <div class="ms-card__body">
+          <div class="ms-manip">
+            <label><span id="ms-manip-label">환경</span></label>
+            <input type="range" id="ms-slider" min="0" max="100" value="50" />
+            <div class="ms-envbtns">
+              <button class="chip" id="ms-low">◀ 낮게</button>
+              <button class="chip" id="ms-high">높게 ▶</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ms-card">
+        <div class="ms-card__body">
+          <div class="ms-btns">
+            <button class="btn ms-start" id="ms-start">▶ 측정 시작</button>
+            <button class="btn ms-stop" id="ms-stop">■ 정지</button>
+          </div>
+          <button class="btn btn--ghost" id="ms-clear" style="width:100%;margin-top:8px">🗑 데이터 지우기</button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ===== MAIN ===== -->
+    <main class="ms-graph-wrap">
+      <div class="ms-graph-card">
+        <div class="ms-graph-head">
+          <h3 id="ms-graph-title">측정</h3>
+          <span class="ms-live" id="ms-live"><span class="dot"></span> LIVE</span>
+          <div class="ms-bignum"><b id="ms-big">–</b><br><span id="ms-unit">값</span></div>
+        </div>
+        <canvas id="ms-canvas"></canvas>
+        <div class="ms-stats">
+          <div class="ms-stat"><b id="ms-st-n">0</b><span>측정 횟수</span></div>
+          <div class="ms-stat"><b id="ms-st-min">–</b><span>최솟값</span></div>
+          <div class="ms-stat"><b id="ms-st-max">–</b><span>최댓값</span></div>
+          <div class="ms-stat"><b id="ms-st-avg">–</b><span>평균</span></div>
+        </div>
+      </div>
+
+      <div class="ms-lower">
+        <div class="ms-graph-card">
+          <div class="ms-graph-head"><h3>📋 측정 기록</h3></div>
+          <div class="ms-table-scroll">
+            <table class="ms-table">
+              <thead><tr><th>시간 (초)</th><th>측정값</th></tr></thead>
+              <tbody id="ms-tbody"></tbody>
+            </table>
+          </div>
+          <div class="ms-export">
+            <button class="btn btn--ghost btn--sm" id="ms-csv">⬇ CSV로 내보내기</button>
+          </div>
+        </div>
+
+        <div class="ms-graph-card">
+          <div class="ms-graph-head"><h3>🐍 측정 코드</h3></div>
+          <div class="ms-pycode"><code id="ms-pycode"></code></div>
+          <p style="font-size:.82rem;color:var(--ink-500);margin-top:10px">실제 로봇에서는 이 코드로 센서 값을 읽어 같은 그래프를 그릴 수 있어요.</p>
+        </div>
+      </div>
+
+      <div class="lesson__goal" style="max-width:none">
+        🔬 <b>탐구 활동 —</b> 예측값을 먼저 적고 측정을 시작하세요. 환경을 조작해 그래프가 오르내리는 과정을 관찰하고,
+        <b>예측 → 측정 → 결론</b>을 학습지에 기록하면 지능형 과학실 수업이 완성됩니다.
+      </div>
+    </main>
+  </div>
+
+  <script src="assets/js/measure.js"></script>
+  <script>
+    (function () {
+      var nav = document.getElementById("nav"), t = document.getElementById("navToggle");
+      if (t) t.addEventListener("click", function () { nav.classList.toggle("is-open"); });
+    })();
+  </script>
+</body>
+</html>

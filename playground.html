@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>실습하기 · SciBot 지능형 과학실 로봇 코딩</title>
+  <meta name="description" content="블록을 조립해 가상 햄스터S를 실행하고 파이썬 코드로 확인하는 SciBot 실습장. 도형·빛·소리 등 과학·수학 이론과 연계됩니다." />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤖</text></svg>" />
+</head>
+<body class="pg-body">
+
+  <!-- ===== HEADER ===== -->
+  <header class="header">
+    <div class="container">
+      <nav class="nav" id="nav">
+        <a class="brand" href="index.html#top"><span class="brand__logo"></span>Sci<b>Bot</b></a>
+        <div class="nav__links">
+          <a href="index.html#steps">사용법</a>
+          <a href="index.html#dict">블록사전</a>
+          <a href="index.html#course">기초과정</a>
+          <a href="index.html#gallery">활동 갤러리</a>
+          <a href="playground.html">실습하기</a>
+          <a href="measure.html">측정·그래프</a>
+        </div>
+        <div class="nav__cta">
+          <a class="btn btn--ghost btn--sm" href="index.html">← 홈으로</a>
+        </div>
+        <button class="nav__toggle" id="navToggle" aria-label="메뉴 열기">☰</button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ===== INTRO ===== -->
+  <div style="max-width:1400px;margin:0 auto;padding:22px 18px 6px">
+    <span class="eyebrow">🔬 지능형 과학실 실습 · 블록 → 파이썬</span>
+    <h1 style="font-size:clamp(1.5rem,3vw,2rem);margin:14px 0 6px">실습하기 — 가상 햄스터S 플레이그라운드</h1>
+    <p style="color:var(--ink-500);max-width:60em">
+      왼쪽 블록을 눌러 프로그램을 만들고 <b>▶ 실행</b>하면 오른쪽 화면의 로봇이 움직입니다.
+      도형(수학)·빛의 색·소리의 높낮이 같은 <b>과학·수학 이론</b>을 로봇으로 직접 확인해 보세요.
+      만든 블록은 언제든 <b>파이썬 코드</b>로 바뀌어 함께 표시됩니다.
+    </p>
+  </div>
+
+  <p class="pg-hint-bar">💡 아래 <b>예제</b>를 눌러 바로 시작하거나, 직접 블록을 담아 보세요. 로봇은 실제 하드웨어 없이 시뮬레이션됩니다.</p>
+
+  <!-- ===== PRESETS ===== -->
+  <div class="pg-presets" id="pg-presets" style="max-width:1400px;margin:0 auto">
+    <button class="chip" data-preset="square">⬛ 정사각형 (외각 90°)</button>
+    <button class="chip" data-preset="triangle">🔺 정삼각형 (외각 120°)</button>
+    <button class="chip" data-preset="star">⭐ 별 (외각 144°)</button>
+    <button class="chip" data-preset="rainbow">🌈 빛의 색 변화</button>
+    <button class="chip" data-preset="melody">🎵 도레미 음계</button>
+  </div>
+
+  <!-- ===== WORKSPACE ===== -->
+  <div class="pg-wrap">
+
+    <!-- palette -->
+    <div class="pg-col">
+      <div class="pg-panel" style="flex:1">
+        <div class="pg-panel__head">🧩 블록 팔레트</div>
+        <div class="pg-scroll" id="pg-palette"></div>
+      </div>
+    </div>
+
+    <!-- script + python -->
+    <div class="pg-col" style="gap:14px">
+      <div class="pg-panel" style="flex:1">
+        <div class="pg-panel__head">
+          📜 내 프로그램
+          <span class="sp"></span>
+          <span style="font-weight:600;font-size:.8rem;color:var(--ink-300)">반복 블록을 누르면 그 안에 담깁니다</span>
+        </div>
+        <div class="pg-script" id="pg-script"></div>
+        <div class="pg-controls">
+          <button class="btn pg-run" id="pg-run">▶ 실행</button>
+          <button class="btn pg-stop" id="pg-stop">■ 정지</button>
+          <button class="btn btn--ghost" id="pg-clear">🗑 전체 지우기</button>
+        </div>
+      </div>
+
+      <div class="pg-py">
+        <div class="pg-py__head">🐍 생성된 파이썬 코드 (robomation)
+          <button id="pg-copy">복사</button>
+        </div>
+        <pre><code id="pg-pycode"></code></pre>
+      </div>
+    </div>
+
+    <!-- stage -->
+    <div class="pg-col pg-col--stage">
+      <div class="pg-panel">
+        <div class="pg-panel__head">🤖 실행 화면 (가상 햄스터S)
+          <span class="sp"></span>
+          <button class="btn btn--ghost btn--sm" id="pg-reset-stage">↺ 화면 초기화</button>
+        </div>
+        <div class="pg-stage-wrap">
+          <canvas id="pg-canvas" height="360"></canvas>
+          <div class="pg-readouts">
+            <div class="pg-read"><b id="pg-r-x">0</b><span>X (cm)</span></div>
+            <div class="pg-read"><b id="pg-r-y">0</b><span>Y (cm)</span></div>
+            <div class="pg-read"><b id="pg-r-h">0°</b><span>방향</span></div>
+          </div>
+          <div class="pg-console" id="pg-console"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SCIENCE LINK NOTE ===== -->
+  <div style="max-width:1400px;margin:8px auto 40px;padding:0 18px">
+    <div class="lesson__goal" style="max-width:none">
+      🔬 <b>지능형 과학실 연계 —</b> 정다각형을 그리며 <b>외각의 합(360°)</b>을, LED 색 변화로 <b>빛의 삼원색</b>을,
+      음계 연주로 <b>진동수와 소리의 높낮이</b>를 탐구합니다. 예측 → 실행 → 관찰의 과정을 학습지에 기록해 보세요.
+    </div>
+  </div>
+
+  <script src="assets/js/playground.js"></script>
+  <script>
+    // mobile nav (standalone)
+    (function () {
+      var nav = document.getElementById("nav"), t = document.getElementById("navToggle");
+      if (t) t.addEventListener("click", function () { nav.classList.toggle("is-open"); });
+    })();
+  </script>
+</body>
+</html>
